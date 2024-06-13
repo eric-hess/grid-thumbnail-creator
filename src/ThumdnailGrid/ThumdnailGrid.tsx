@@ -1,17 +1,23 @@
 import React from 'react';
-import {Button, Grid} from '@mui/material';
+import {Button, CircularProgress, Grid} from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DownloadIcon from '@mui/icons-material/Download';
 import HiddenInput from './HiddenInput';
 import {createGridThumbnail} from './Helper';
 
 const ThumdnailGrid = () => {
+    const [video, setVideo] = React.useState<string>();
     const [gridThumbnail, setGridThumbnail] = React.useState<string>();
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setVideo(undefined);
+        setGridThumbnail(undefined);
+        
         if (!event.target.files || !event.target.files[0]) {
             return;
         }
+
+        setVideo(URL.createObjectURL(event.target.files[0]));
 
         createGridThumbnail(
             URL.createObjectURL(event.target.files[0]),
@@ -54,12 +60,24 @@ const ThumdnailGrid = () => {
                 </Button>
             </Grid>
             {
+                video && !gridThumbnail && (
+                    <Grid
+                        item
+                        xs={12}
+                        justifyContent='center'
+                        alignItems='center'
+                        style={{ display: 'flex' }}
+                    >
+                        <CircularProgress />
+                    </Grid>
+                )
+            }
+            {
                 gridThumbnail && (
                     <>
                         <Grid
                             item
                             xs={12}
-                            container
                             justifyContent='center'
                             alignItems='center'
                             style={{ display: 'flex' }}
